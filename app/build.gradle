@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+
+    defaultConfig {
+        applicationId "com.udacity.gradle.builditbigger"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        free {
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
+        }
+        paid {
+            applicationIdSuffix ".paid"
+            versionNameSuffix "-paid"
+        }
+    }
+
+    configurations {
+        freeCompile.exclude group: "org.apache.httpcomponents", module: "httpclient"
+        paidCompile.exclude group: "org.apache.httpcomponents", module: "httpclient"
+    }
+
+}
+
+ext {
+    playServicesAdstVersion = '11.0.4'
+    supportLibVersion = '26.0.2'
+    findBugVersion = '2.0.1'
+    apiClientVersion = '1.23.0'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile project(':jokes_lib')
+    compile project(':jokes_android_lib')
+    compile project(path: ':backend', configuration: 'android-endpoints')
+    freeCompile "com.google.android.gms:play-services-ads:${playServicesAdstVersion}"
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.google.code.findbugs:jsr305:${findBugVersion}"
+    compile "com.google.api-client:google-api-client-android:${apiClientVersion}"
+
+}

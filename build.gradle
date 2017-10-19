@@ -1,0 +1,57 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven{
+            url "https://maven.google.com"
+        }
+    }
+}
+
+task runBackendServer(dependsOn: ":backend:appengineRun") {
+    group = "Custom Tasks"
+    description = "Starting Backend Server"
+    project(":backend").afterEvaluate { backend ->
+        backend.extensions.appengine.daemon = true
+    }
+    doLast {
+        println "Server Started!"
+    }
+}
+
+task runTest {
+    group = "Custom Tasks"
+    description = "Start End Point Asynch Task Test"
+    dependsOn ':app:connectedAndroidTest'
+    mustRunAfter runBackendServer
+}
+
+task shutdownBackendServer {
+    group = "Custom Tasks"
+    description = "Shuting Down Backend Server"
+    dependsOn ':backend:appengineStop'
+    mustRunAfter runTest
+    doLast {
+        println "server shutdown!"
+    }
+}
+
+task automateAll(dependsOn: [runBackendServer, runTest, shutdownBackendServer]) {
+    group = "Automating"
+    description = "Automating All Process"
+    runTest.mustRunAfter runBackendServer
+    shutdownBackendServer.mustRunAfter runTest
+}

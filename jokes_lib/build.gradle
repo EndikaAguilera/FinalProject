@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+//noinspection GroovyUnusedAssignment
+targetCompatibility = JavaVersion.VERSION_1_7
+//noinspection GroovyUnusedAssignment
+sourceCompatibility = JavaVersion.VERSION_1_7
